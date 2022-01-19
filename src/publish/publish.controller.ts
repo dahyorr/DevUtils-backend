@@ -7,7 +7,10 @@ export class PublishController {
 
   @Get('test')
   testPublisher() {
-    this.publisherService.publishMessage('sha256', 'whreksuberseugskvehrbfiueskrh' );
-    return 'Here we go  ';
+    this.publisherService.publishMessage(
+      'sha256',
+      '30144822-d8de-41d6-9df6-bc9d32b50167',
+    );
+    return 'Here we go';
   }
 }
