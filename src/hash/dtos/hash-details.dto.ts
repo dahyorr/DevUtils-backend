@@ -1,14 +1,10 @@
 import {IsEnum, IsUUID} from 'class-validator'
-
-enum HashType{
-    'sha256',
-    'md5'
-}
+import { HashEnum, HashType } from 'src/types';
 
 export class HashDetailsDto{
     @IsUUID('4')
     fileId: string;
 
-    @IsEnum(HashType)
-    hashType: string
+    @IsEnum(HashEnum)
+    hashType: HashType
 }
