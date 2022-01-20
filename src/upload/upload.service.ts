@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { writeFile } from 'fs/promises';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UploadService {
-  UPLOAD_PATH = process.env.UPLOAD_DESTINATION;
+  constructor(private readonly configService: ConfigService) {}
+  UPLOAD_PATH = this.configService.get<string>('UPLOAD_DESTINATION');
 
   generateUUID() {
     return uuidv4();
@@ -19,8 +21,9 @@ export class UploadService {
   }
 
   async initiateUpload(file: Express.Multer.File) {
-    const uuid = this.generateUUID();
-    await this.saveFile(uuid, file.buffer);
-    return uuid;
+    const fileId = this.generateUUID();
+    await this.saveFile(fileId, file.buffer);
+    // TODO: save file metadata to database
+    return { fileId, message: 'File uploaded successfully' };
   }
 }

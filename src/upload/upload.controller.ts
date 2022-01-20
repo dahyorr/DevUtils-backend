@@ -5,18 +5,22 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
 
 @Controller('upload')
 export class UploadController {
-  constructor(private readonly uploadService: UploadService) {}
+  constructor(
+    private readonly uploadService: UploadService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Post('')
   @UseInterceptors(
     FileInterceptor('file', {
       limits: {
-        fileSize: 10000000,
+        fileSize: 20000000,
       },
     }),
   )
@@ -24,10 +28,8 @@ export class UploadController {
     if (!file) {
       throw new UnprocessableEntityException('No file provided');
     } else {
-      const fileId = await this.uploadService.initiateUpload(file);
-      return {
-        fileId, 
-      };
+      const res = await this.uploadService.initiateUpload(file);
+      return res
     }
   } 
 }
