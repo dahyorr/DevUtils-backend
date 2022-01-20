@@ -1,32 +1,31 @@
 import { Module } from '@nestjs/common';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { PublishService } from './publish.service';
-import { PublishController } from './publish.controller';
+// import { PublishController } from './publish.controller';
+import { ConfigService } from '@nestjs/config';
 
-const RABBITMQ_USER = process.env.RABBITMQ_DEFAULT_USER;
-const RABBITMQ_PASSWORD = process.env.RABBITMQ_DEFAULT_PASS;
-const RABBITMQ_HOST = process.env.RABBITMQ_HOST;
-const RABBITMQ_PORT = process.env.RABBITMQ_PORT;
 
 @Module({
-  providers: [PublishService],
-  imports: [
-    ClientsModule.register([
-      {
-        name: 'HASHING_SERVICE',
-        transport: Transport.RMQ,
-        options: {
-          urls: [
-            `amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@${RABBITMQ_HOST}:${RABBITMQ_PORT}/`,
-          ],
-          queue: 'hashing-queue',
-          queueOptions: {
-            durable: true,
-          },
-        },
+  // controllers: [PublishController],
+  providers: [
+    PublishService,
+    {
+      provide: 'HASHING_SERVICE',
+      useFactory: (configService: ConfigService) =>{
+        const connectionString = configService.get<string>('amqpString')
+        return ClientProxyFactory.create({
+          transport: Transport.RMQ,
+          options: {
+            urls: [connectionString],
+            queue: 'hashing-queue',
+            queueOptions: {
+              durable: true,
+            }
+          }
+        })
       },
-    ]),
-  ],
-  controllers: [PublishController],
+      inject: [ConfigService]
+    }],
+  exports: [PublishService],
 })
 export class PublishModule {}
