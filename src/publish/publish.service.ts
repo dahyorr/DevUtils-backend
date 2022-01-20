@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { HashType } from 'src/types';
 
 @Injectable()
 export class PublishService {
@@ -7,7 +8,8 @@ export class PublishService {
     @Inject('HASHING_SERVICE') private readonly client: ClientProxy,
   ) {}
 
-  publishMessage(pattern: string, message: string) {
+  publishMessage(pattern: HashType, message: string) {
+    /* publishes message to worker with rabbitmq */
     this.client.emit(pattern, message);
   }
   
