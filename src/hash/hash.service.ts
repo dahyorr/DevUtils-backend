@@ -42,9 +42,10 @@ export class HashService {
     const hashedResult = this.parseFileHash(fileData, hashType)
     
     if (hashedResult) {
-      return response.status(200).json({
+      response.status(200).json({
         message: `File has already been hashed for ${hashType}`,
       });
+      return;
     }
 
     this.publishService.publishMessage(hashType, fileId);
