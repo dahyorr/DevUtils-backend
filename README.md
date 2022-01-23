@@ -1,4 +1,4 @@
-# file-hash-generator-backend
+# DevUtils-backend
 Backend for file-hash generator
 
 
