@@ -1,6 +1,5 @@
-import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
-import { Response } from 'express';
-import { HashDetailsDto } from './dtos/hash-details.dto';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { HashRequestDto, HashGetRequestDto } from './dtos/hash-request.dto';
 import { HashService } from './hash.service';
 
 @Controller('hash')
@@ -8,12 +7,12 @@ export class HashController {
   constructor(private readonly service: HashService) {}
 
   @Post('initiate')
-  intiateFileHash(@Body() { fileId, hashType }: HashDetailsDto, @Res({passthrough: true}) res: Response) {
-    return this.service.initiateFileHash(fileId, hashType, res);
+  intiateFileHash(@Body() { fileId, hashType }: HashRequestDto) {
+    return this.service.initiateFileHash(fileId, hashType);
   }
 
   @Get('result')
-  getHashResult(@Query() { fileId, hashType }: HashDetailsDto) {
-    return this.service.getHashResult(fileId, hashType);
+  getHashResult(@Query() { fileId }: HashGetRequestDto) {
+    return this.service.getHashResult(fileId);
   }
 }
