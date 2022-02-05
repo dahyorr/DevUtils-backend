@@ -8,7 +8,7 @@ export class HashRequestDto{
     @IsArray()
     @ArrayMinSize(1)
     @IsEnum(HashEnum,{each: true})
-    hashType: HashType[]
+    hashTypes: HashType[]
 }
 
 export class HashGetRequestDto{

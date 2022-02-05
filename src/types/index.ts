@@ -4,16 +4,17 @@ export enum HashEnum {
   }
   
 export type HashType = 'sha256' | 'md5'
+export type StatusType = "Pending" | "Failed" | "Completed"
 
-export interface hashData {
+export interface HashData {
   hashType: HashType;
   hash: string;
-  status?: string;
+  status: StatusType;
 }
 
 export interface FileMetaData {
   filename: string;
   size: number;
   mimetype: string;
-  hashes: hashData[] | null;
+  hashes: HashData[] | null;
 }

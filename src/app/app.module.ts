@@ -13,7 +13,7 @@ import configuration from '../config/configuration';
       load: [configuration],
       isGlobal: true
     }),
-    HashModule 
+    HashModule,
   ],
 })
 export class AppModule {}

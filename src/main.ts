@@ -10,6 +10,7 @@ async function bootstrap() {
       transform: true
     }),
   );
-  await app.listen(3000);
+  app.enableCors()
+  await app.listen(process.env.BACKEND_PORT);
 }
 bootstrap();

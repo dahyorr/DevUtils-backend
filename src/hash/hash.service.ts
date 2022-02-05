@@ -41,7 +41,7 @@ export class HashService {
   async addPendingStatus(fileId: string, fileData: FileMetaData, hashType: HashType){
     const hashPendingData = {
       hashType,
-      status: "Pending",
+      status: "Pending" as const,
       hash: ""
     }
     if(fileData.hashes){

@@ -7,8 +7,8 @@ export class HashController {
   constructor(private readonly service: HashService) {}
 
   @Post('initiate')
-  intiateFileHash(@Body() { fileId, hashType }: HashRequestDto) {
-    return this.service.initiateFileHash(fileId, hashType);
+  intiateFileHash(@Body() { fileId, hashTypes }: HashRequestDto) {
+    return this.service.initiateFileHash(fileId, hashTypes);
   }
 
   @Get('result')
