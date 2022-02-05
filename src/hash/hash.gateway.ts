@@ -39,8 +39,4 @@ export class HashGateway {
     console.log(data.fileId, data.hashType)
     return 'Hello world!';
   }
-
-  sendHashRequestCompleted(fileId: string, hashType: HashType){
-    this.server.sockets.emit(`${fileId}/${hashType}`, 'completed' )
-  }
 }
