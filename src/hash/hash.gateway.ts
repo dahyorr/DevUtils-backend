@@ -9,7 +9,7 @@ import { HashService } from './hash.service';
   cors: {
     origin: '*',
   },
-  namespace: 'file-hash'
+  namespace: 'file-hash',
 })
 export class HashGateway {
   constructor(private readonly service: HashService){}
@@ -25,7 +25,6 @@ export class HashGateway {
     const {fileId, hashType} = data
 
     const interval =  setInterval(async () => {
-      console.log('Checking')
       const res = await this.service.getHashResult(fileId) //TODO: listen for redis publish instead
       const hashData = res.find((hash) => hashType === hash.hashType)
       

@@ -11,6 +11,7 @@ async function bootstrap() {
     }),
   );
   app.enableCors()
-  await app.listen(process.env.BACKEND_PORT);
+  app.setGlobalPrefix('api')
+  await app.listen(process.env.BACKEND_PORT || 5000);
 }
 bootstrap();
