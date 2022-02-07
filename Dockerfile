@@ -13,6 +13,14 @@ COPY . .
 RUN mkdir /uploads
 RUN chown node /uploads
 
+FROM base as builder
+RUN npm run build
+
+FROM builder as production
+ENV NODE_ENV=production
+EXPOSE 5000
+CMD [ "npm", "run", "start:prod" ]
+
 FROM base as dev
 ENV NODE_ENV=development
 EXPOSE 5000
@@ -22,10 +30,3 @@ CMD [ "npm", "run", "start:dev" ]
 # ENV NODE_ENV=test
 # CMD [ "npm", "run", "start:dev" ]  
 
-FROM base as builder
-RUN npm run build
-
-FROM builder as production
-ENV NODE_ENV=production
-EXPOSE 5000
-CMD [ "npm", "run", "start:prod" ]
