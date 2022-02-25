@@ -1,5 +1,5 @@
 # DevUtils-backend
-Backend for file-hash generator
+Backend for DevUtils
 
 
 <p align="center">
