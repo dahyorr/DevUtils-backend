@@ -1,4 +1,4 @@
-FROM node:lts-slim as base
+FROM node:lts-alpine as base
 
 WORKDIR /code
 ENV PATH /code/node_modules/.bin:$PATH
