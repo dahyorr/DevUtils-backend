@@ -8,7 +8,7 @@ import { HashService } from './hash.service';
 
 @Module({
   controllers: [HashController],
-  providers: [HashService, HashGateway],
-  imports: [PublishModule, RedisCacheModule, ConfigService]
+  providers: [HashService, HashGateway, ConfigService],
+  imports: [PublishModule, RedisCacheModule]
 })
 export class HashModule {}
