@@ -12,7 +12,7 @@ async function bootstrap() {
   );
   app.enableCors()
   app.setGlobalPrefix('api')
-  const PORT = process.env.BACKEND_PORT || 5000
+  const PORT = process.env.PORT || process.env.BACKEND_PORT || 5000
   await app.listen(PORT);
 }
 bootstrap();
