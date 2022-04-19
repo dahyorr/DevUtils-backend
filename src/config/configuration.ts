@@ -1,9 +1,3 @@
-const RABBITMQ_USER = process.env.RABBITMQ_DEFAULT_USER;
-const RABBITMQ_PASSWORD = process.env.RABBITMQ_DEFAULT_PASS;
-const RABBITMQ_HOST = process.env.RABBITMQ_HOST;
-const RABBITMQ_PORT = process.env.RABBITMQ_PORT;
-const RABBITMQ_PROTOCOOL = process.env.RABBITMQ_PROTOCOOL;
-
 export default () => ({
-  amqpString: `${RABBITMQ_PROTOCOOL}://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@${RABBITMQ_HOST}:${RABBITMQ_PORT}/`,
+  amqpString: process.env.RABBITMQ_URL
 });
