@@ -1,6 +1,8 @@
 export enum HashEnum {
     'sha256',
     'md5',
+    'sha512',
+    'sha224'
   }
   
 export type HashType = 'sha256' | 'md5' | 'sha512' | 'sha224'
