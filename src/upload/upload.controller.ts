@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Post,
   UnprocessableEntityException,
@@ -8,13 +9,14 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
+import { UploadRequestDto } from './dtos/upload-request.dto';
 
 @Controller('upload')
 export class UploadController {
   constructor(
     private readonly uploadService: UploadService,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   @Post('')
   @UseInterceptors(
@@ -24,12 +26,16 @@ export class UploadController {
       },
     }),
   )
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+  async uploadFile(@UploadedFile() file: Express.Multer.File, @Body() { isTemp }: UploadRequestDto) {
     if (!file) {
       throw new UnprocessableEntityException('No file provided');
     } else {
-      const res = await this.uploadService.initiateUpload(file);
+      let prefix = ''
+      if (isTemp) {
+        prefix = 'temp'
+      }
+      const res = await this.uploadService.initiateUpload(file, prefix);
       return res
     }
-  } 
+  }
 }

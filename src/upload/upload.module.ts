@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { RedisCacheModule } from 'src/redis-cache/redis-cache.module';
 import { UploadController } from './upload.controller';
 import { UploadService } from './upload.service';
+import { PrismaService } from 'src/prisma.service';
 
 @Module({
   controllers: [UploadController],
-  providers: [UploadService, ConfigService],
-  imports: [RedisCacheModule],
+  providers: [UploadService, ConfigService, PrismaService],
 })
-export class UploadModule {}
+export class UploadModule { }

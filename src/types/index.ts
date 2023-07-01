@@ -1,3 +1,5 @@
+import { HashStatus } from "@prisma/client";
+
 export enum HashEnum {
     'sha256',
     'md5',
@@ -20,4 +22,10 @@ export interface FileMetaData {
   size: number;
   mimetype: string;
   hashes: HashData[] | null;
+}
+
+export interface WorkerHashResponse{
+  hash: string,
+  hashType: HashEnum,
+  status: HashStatus
 }

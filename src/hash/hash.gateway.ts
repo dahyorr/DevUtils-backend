@@ -12,23 +12,23 @@ import { HashService } from './hash.service';
   namespace: 'file-hash',
 })
 export class HashGateway {
-  constructor(private readonly service: HashService){}
+  constructor(private readonly service: HashService) { }
 
   @WebSocketServer()
   server: Server;
 
   @SubscribeMessage('hash-ready')
   handleMessage(
-    @MessageBody() data: {fileId: string; hashType: HashType},
+    @MessageBody() data: { fileId: string; hashType: HashType },
     @ConnectedSocket() client: Socket,
-    ): string {
-    const {fileId, hashType} = data
+  ): string {
+    const { fileId, hashType } = data
 
-    const interval =  setInterval(async () => {
+    const interval = setInterval(async () => {
       const res = await this.service.getHashResult(fileId) //TODO: listen for redis publish instead
-      const hashData = res.find((hash) => hashType === hash.hashType)
-      
-      if(hashData.status === "Completed"){
+      const hashData = res.find((hash) => hashType === hash.type)
+
+      if (hashData.status === "completed") {
         clearInterval(interval)
         client.emit('hash-completed', hashData)
       }
