@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { HashType } from 'src/types';
 import { PrismaService } from 'src/prisma.service';
 import { WorkerService } from 'src/worker/worker.service';
@@ -104,17 +104,23 @@ export class HashService {
 
 
     if (sortedHashes['pending'].length > 0) {
-      const hashes = await Promise.all(sortedHashes['pending'].map(h => this.worker.hashRequest(fileData.id, h.type)))
-      // const hashesToUpdate = sortedHashes['pending'].map((h, i) => ({ ...h, hash: hashes[i], status: 'completed' }))
-      const res = await Promise.all(sortedHashes['pending'].map(({ id, ...hashData }, i) => (this.prisma.hash.update({
-        where: { id },
-        data: {
-          ...hashData,
-          hash: hashes[i].hash,
-          status: 'completed'
-        }
-      }))))
-      console.log(res)
+      try {
+        const hashes = await Promise.all(sortedHashes['pending'].map(h => this.worker.hashRequest(fileData.id, h.type)))
+        console.log(hashes)
+        const res = await Promise.all(sortedHashes['pending'].map(({ id, ...hashData }, i) => (this.prisma.hash.update({
+          where: { id },
+          data: {
+            ...hashData,
+            hash: hashes[i].hash,
+            status: 'completed'
+          }
+        }))))
+        console.log(res)
+      }
+      catch (err) {
+        console.log(err)
+        throw new InternalServerErrorException("Something went wrong")
+      }
     }
 
     return hashes
