@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import { ConfigService } from '@nestjs/config';
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
@@ -29,7 +29,7 @@ export class UploadService {
 
   async initiateUpload(file: Express.Multer.File, prefix?: string) {
     /* processes upload and saves metadata to cache*/
-    const fileId = uuidv4();
+    const fileId = randomUUID();
     let key = fileId
     if (prefix) {
       key = `${prefix}/${fileId}`
