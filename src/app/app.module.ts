@@ -5,7 +5,6 @@ import { ConfigModule } from '@nestjs/config';
 import { HashModule } from '../hash/hash.module';
 import configuration from '../config/configuration';
 import { DbModule } from '../db/db.module';
-// import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -17,7 +16,6 @@ import { DbModule } from '../db/db.module';
     }),
     DbModule,
     HashModule,
-    // ScheduleModule.forRoot()
   ],
 })
 export class AppModule { }
