@@ -32,34 +32,36 @@ Backend for DevUtils
 
 ## Installation
 
+This project is part of a pnpm workspace — install from the repo root:
+
 ```bash
-$ npm install
+$ pnpm install
 ```
 
 ## Running the app
 
 ```bash
 # development
-$ npm run start
+$ pnpm --filter backend start
 
 # watch mode
-$ npm run start:dev
+$ pnpm --filter backend start:dev
 
 # production mode
-$ npm run start:prod
+$ pnpm --filter backend start:prod
 ```
 
 ## Test
 
 ```bash
 # unit tests
-$ npm run test
+$ pnpm --filter backend test
 
 # e2e tests
-$ npm run test:e2e
+$ pnpm --filter backend test:e2e
 
 # test coverage
-$ npm run test:cov
+$ pnpm --filter backend test:cov
 ```
 
 ## Support
