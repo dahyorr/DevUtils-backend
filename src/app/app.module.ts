@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 // import { PublishModule } from 'src/publish/publish.module';
 import { HashModule } from '../hash/hash.module';
 import configuration from '../config/configuration';
+import { DbModule } from '../db/db.module';
 // import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
@@ -14,6 +15,7 @@ import configuration from '../config/configuration';
       load: [configuration],
       isGlobal: true
     }),
+    DbModule,
     HashModule,
     // ScheduleModule.forRoot()
   ],

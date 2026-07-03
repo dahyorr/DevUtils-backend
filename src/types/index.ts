@@ -1,4 +1,4 @@
-import { HashStatus } from "@prisma/client";
+export type HashStatus = 'pending' | 'completed' | 'failed'
 
 export enum HashEnum {
     'sha256',
