@@ -1,19 +1,22 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { HashType } from 'src/types';
-import { PrismaService } from 'src/prisma.service';
+import { Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { randomUUID } from 'crypto';
+import { eq } from 'drizzle-orm';
+import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
+import { HashStatus, HashType } from 'src/types';
+import { DB } from 'src/db/db.module';
+import * as schema from 'src/db/schema';
 import { WorkerService } from 'src/worker/worker.service';
-import { HashStatus } from '@prisma/client';
 
 @Injectable()
 export class HashService {
   constructor(
-    private readonly prisma: PrismaService,
+    @Inject(DB) private readonly db: NeonHttpDatabase<typeof schema>,
     private readonly worker: WorkerService,
   ) { }
 
   async validatFileRecord(fileId: string) {
     /*  Returns file record if it exists in cache */
-    const fileData = await this.prisma.file.findUnique({ where: { id: fileId } });
+    const fileData = await this.db.query.files.findFirst({ where: eq(schema.files.id, fileId) });
     if (!fileData) {
       throw new NotFoundException('This record does not exist');
     }
@@ -62,12 +65,13 @@ export class HashService {
   ) {
     /* starts file hashing */
     const fileData = await this.validatFileRecord(fileId)
-    await this.prisma.hash.createMany({
-      data: hashTypes.map(hashType => ({
+    await this.db.insert(schema.hashes).values(
+      hashTypes.map(hashType => ({
+        id: randomUUID(),
         type: hashType,
-        file_id: fileData.id
+        fileId: fileData.id
       }))
-    })
+    )
     return {
       message: 'Hash request initaited',
     };
@@ -75,12 +79,15 @@ export class HashService {
 
   async getHashResult(fileId: string) {
     /* fetches file hashing result */
-    const fileData = await this.prisma.file.findUnique({
-      where: { id: fileId }, select: {
+    const fileData = await this.db.query.files.findFirst({
+      where: eq(schema.files.id, fileId),
+      columns: {
         id: true,
         key: true,
+      },
+      with: {
         hashes: {
-          select: {
+          columns: {
             id: true,
             type: true,
             status: true,
@@ -107,14 +114,13 @@ export class HashService {
       try {
         const hashes = await Promise.all(sortedHashes['pending'].map(h => this.worker.hashRequest(fileData.id, h.type)))
         console.log(hashes)
-        const res = await Promise.all(sortedHashes['pending'].map(({ id, ...hashData }, i) => (this.prisma.hash.update({
-          where: { id },
-          data: {
+        const res = await Promise.all(sortedHashes['pending'].map(({ id, ...hashData }, i) => (this.db.update(schema.hashes)
+          .set({
             ...hashData,
             hash: hashes[i].hash,
             status: 'completed'
-          }
-        }))))
+          })
+          .where(eq(schema.hashes.id, id)))))
         console.log(res)
       }
       catch (err) {

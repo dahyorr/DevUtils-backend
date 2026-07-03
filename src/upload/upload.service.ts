@@ -1,14 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
-import { PrismaService } from 'src/prisma.service';
+import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
+import { DB } from 'src/db/db.module';
+import * as schema from 'src/db/schema';
 
 @Injectable()
 export class UploadService {
   constructor(
     private readonly configService: ConfigService,
-    private prisma: PrismaService
+    @Inject(DB) private readonly db: NeonHttpDatabase<typeof schema>
   ) { }
   S3_BUCKET = this.configService.get<string>('S3_UPLOAD_BUCKET')
   S3_REGION = this.configService.get<string>('S3_REGION')
@@ -34,14 +36,13 @@ export class UploadService {
     }
     const { buffer, originalname: filename, size, mimetype } = file;
     await this.uploadFile(key, buffer);
-    await this.prisma.file.create({
-      data: {
-        id: fileId,
-        filename,
-        size,
-        mimetype,
-        key
-      }
+    await this.db.insert(schema.files).values({
+      id: fileId,
+      filename,
+      size,
+      mimetype,
+      key,
+      updatedAt: new Date()
     })
     // await this.redisCache.setValue<FileMetaData>(fileId, metaData);
     return { fileId, message: 'File uploaded successfully' };
